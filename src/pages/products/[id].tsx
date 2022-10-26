@@ -3,7 +3,7 @@ import {
 	ImageContainer,
 	ProductContainer,
 	ProductDetails,
-} from "../../styles/pages/product";
+} from "../../styles/pages/productId";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { stripe } from "../../lib/stripe";
 import Stripe from "stripe";
@@ -11,37 +11,26 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import { useState } from "react";
 import Head from "next/head";
+import { useShoppingCart } from "use-shopping-cart";
 
 interface ProductProps {
 	product: {
 		id: string;
 		name: string;
 		imageUrl: string;
-		price: string;
+		price: number;
+		price_formatted: string;
 		description: string;
-		defaultPriceId: string;
+		currency: string;
 	};
 }
 
 export default function Product({ product }: ProductProps) {
+	const { addItem } = useShoppingCart();
 	const { isFallback } = useRouter();
-	const [createCheckoutSession, setCreateCheckoutSession] = useState(false);
 
-	async function handleBuyProduct() {
-		try {
-			setCreateCheckoutSession(true);
-			const response = await axios.post("/api/checkout", {
-				priceId: product.defaultPriceId,
-			});
-
-			const { checkoutUrl } = response.data;
-
-			window.location.href = checkoutUrl;
-		} catch (err) {
-			// Ferramentas de observabilidade (DataDog, Sentry);
-			setCreateCheckoutSession(false);
-			alert("Falha ao redirecionar");
-		}
+	function handleAddItemToCart() {
+		addItem(product);
 	}
 
 	if (isFallback) {
@@ -66,13 +55,11 @@ export default function Product({ product }: ProductProps) {
 
 				<ProductDetails>
 					<h1>{product.name}</h1>
-					<span>{product.price}</span>
+					<span>{product.price_formatted}</span>
 
 					<p>{product.description}</p>
 
-					<button onClick={handleBuyProduct} disabled={createCheckoutSession}>
-						Comprar Agora
-					</button>
+					<button onClick={handleAddItemToCart}>Colocar na sacola</button>
 				</ProductDetails>
 			</ProductContainer>
 		</>
@@ -103,12 +90,14 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
 				id: product.id,
 				name: product.name,
 				imageUrl: product.images[0],
-				price: new Intl.NumberFormat("pt-BR", {
+				price: price.unit_amount,
+				price_formatted: new Intl.NumberFormat("pt-BR", {
 					style: "currency",
 					currency: "BRL",
 				}).format(price.unit_amount / 100),
 				description: product.description,
-				defaultPriceId: price.id,
+				price_data: price,
+				currency: price.currency,
 			},
 		},
 		revalidate: 60 * 60 * 1, // (60 * 60) == 1hr || 1 == quantidade de horas

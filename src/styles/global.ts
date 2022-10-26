@@ -13,5 +13,11 @@ export const globalStyles = globalCss({
     fontWeight: 400,
     backgroundColor: '$gray900',
     color: '$gray100',
+  },
+
+  button: {
+    '-webkit-font-smoothing': 'antialiased',
+    fontFamily: 'Roboto',
+    fontSize: '1rem',
   }
 })
