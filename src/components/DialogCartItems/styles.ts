@@ -1,5 +1,14 @@
-import { styled } from "../../styles";
+import { keyframes, styled } from "../../styles";
 import * as Dialog from "@radix-ui/react-dialog";
+
+const CartTranslation = keyframes({
+  "0%": {
+    transform: "translateX(110%)",
+  },
+  "100%": {
+    transform: "translateX(0)",
+  }
+})
 
 export const Overlay = styled(Dialog.Overlay , {
     backgroundColor: 'transparent',
@@ -16,6 +25,7 @@ export const DialogContent = styled(Dialog.Content, {
     bottom: 0,
     width: '30rem',
     height: '100vh',
+    animation: `.5s ease-in-out ${CartTranslation}`
 
 })
 
@@ -99,7 +109,8 @@ export const ListCartProducts = styled('div', {
   width: '100%',
   gap: '1.5rem',
   marginTop: '2rem',
-  maxHeight: 330,
+  maxHeight: 340,
+  minHeight: 340,
   overflowY: 'scroll',
   '&::-webkit-scrollbar': {
     width: 2,
@@ -185,3 +196,17 @@ export const ImageContainer = styled('div', {
     alignItems: 'center',
   }
 })
+
+export const DialogClose = styled(Dialog.Close, {
+  position: 'absolute',
+  top: '1.5rem',
+  right: '1.5rem',
+  color: '#8D8D99',
+  lineHeight: 0,
+  background: 'none',
+  outline: 'none',
+  border: 'none',
+  boxSizing: 'initial',
+
+  cursor: 'pointer',
+}) 

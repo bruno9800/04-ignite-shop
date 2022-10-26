@@ -2,6 +2,7 @@ import Image from "next/future/image";
 import {
 	CartProduct,
 	Content,
+	DialogClose,
 	DialogContent,
 	ImageContainer,
 	Info,
@@ -13,6 +14,7 @@ import {
 import { useShoppingCart } from "use-shopping-cart";
 import { useState } from "react";
 import axios from "axios";
+import { X } from "phosphor-react";
 
 export function DialogCartItems() {
 	const { cartCount, formattedTotalPrice, cartDetails, removeItem } =
@@ -47,6 +49,9 @@ export function DialogCartItems() {
 			<Overlay />
 			<DialogContent>
 				<Content>
+					<DialogClose>
+						<X width={24} weight="bold" />
+					</DialogClose>
 					<Title>Sacola de compras</Title>
 					<ListCartProducts>
 						{Object.values(cartDetails).map((product) => {
